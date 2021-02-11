@@ -5,5 +5,9 @@
 
 --Part 2
 
+--SELECT Name
+--	FROM techjobs.employers
+--	WHERE (Location = "St. Louis");
+
 --Part 3
 

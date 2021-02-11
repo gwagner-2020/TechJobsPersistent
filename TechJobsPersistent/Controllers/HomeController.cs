@@ -11,6 +11,7 @@ using TechJobsPersistent.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace TechJobsPersistent.Controllers
 {
     public class HomeController : Controller
@@ -32,12 +33,28 @@ namespace TechJobsPersistent.Controllers
         [HttpGet("/Add")]
         public IActionResult AddJob()
         {
-            return View();
+            AddJobViewModel viewModel = new AddJobViewModel();
+            return View(viewModel);
         }
 
-        public IActionResult ProcessAddJobForm()
+        [HttpPost]
+        public IActionResult ProcessAddJobForm(AddJobViewModel viewModel)
         {
-            return View();
+            if (ModelState.IsValid)
+            {
+                Job newJob = new Job
+                {
+                    Name = viewModel.Name,
+                    EmployerId = viewModel.EmployerId
+                };
+                
+                context.Jobs.Add(newJob);
+                context.SaveChanges();
+
+                return Redirect("/Add");
+
+            }
+            return View(viewModel);
         }
 
         public IActionResult Detail(int id)
