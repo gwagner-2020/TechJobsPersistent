@@ -34,31 +34,59 @@ namespace TechJobsPersistent.Controllers
         public IActionResult AddJob()
         {
             List<Employer> employers = context.Employers.ToList();
+            List<Skill> skills = context.Skills.ToList();
             
-            AddJobViewModel viewModel = new AddJobViewModel(employers);
+            AddJobViewModel viewModel = new AddJobViewModel(employers, skills);
             return View(viewModel);
         }
 
         [HttpPost]
-        public IActionResult ProcessAddJobForm(AddJobViewModel viewModel)
+        
+        public IActionResult ProcessAddJobForm(AddJobViewModel viewModel, string[] selectedSkills)
         {
+
             if (ModelState.IsValid)
             {
+                //List<Skill> skills = context.Skills.ToList();
+                
                 Job newJob = new Job
                 {
                     Name = viewModel.Name,
                     EmployerId = viewModel.EmployerId
                 };
                 
+                for (var i = 0; i < selectedSkills.Length; i++)
+                {
+                    int jobId = newJob.Id;
+                    //int skillId = 0;
+
+                    //nested for loop/?
+                    //for (var j = 0; i < skills.Count; i++)
+                    //{
+                    //    if (selectedSkills[i] == skills[j].Name)
+                    //    {
+                    //        skillId = skills[j].Id;
+                    //    }
+                    //}
+
+                    JobSkill jobSkill = new JobSkill
+                    {
+                        Job = newJob,
+                        SkillId = int.Parse(selectedSkills[i])
+                    };
+                    context.JobSkills.Add(jobSkill);
+                }
+
                 context.Jobs.Add(newJob);
                 context.SaveChanges();
 
-                return Redirect("/Add");
+                return Redirect("/home");
 
             }
-            return View(viewModel);
+            return View("AddJob", viewModel);
         }
 
+        [HttpGet]
         public IActionResult Detail(int id)
         {
             Job theJob = context.Jobs
