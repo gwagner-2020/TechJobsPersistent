@@ -40,16 +40,6 @@ namespace TechJobsPersistent.ViewModels
 
             Skills = possibleSkills;
 
-            //foreach (var skill in possibleSkills)
-            //{
-            //    Skills.Add(new SelectListItem
-            //    {
-            //        Value = skill.Id.ToString(),
-            //        Text = skill.Name
-            //    });
-            //}
-
-
         }
     }
 }

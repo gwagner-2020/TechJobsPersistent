@@ -30,6 +30,7 @@ namespace TechJobsPersistent.Controllers
             return View(jobs);
         }
 
+        //Method pulls employers and skills from database to popluate dropdown and checkboxes        
         [HttpGet("/Add")]
         public IActionResult AddJob()
         {
@@ -40,15 +41,14 @@ namespace TechJobsPersistent.Controllers
             return View(viewModel);
         }
 
+        //POST request that handles and validates new job; saves job properties to the Jobs database in context; saves ids to join table in JobSkill database in context; if not valid returns empty form (using similar code to the constructor in AddJobViewModel)
         [HttpPost]
-        
         public IActionResult ProcessAddJobForm(AddJobViewModel viewModel, string[] selectedSkills)
         {
 
             if (ModelState.IsValid)
             {
-                //List<Skill> skills = context.Skills.ToList();
-                
+               
                 Job newJob = new Job
                 {
                     Name = viewModel.Name,
@@ -58,16 +58,6 @@ namespace TechJobsPersistent.Controllers
                 for (var i = 0; i < selectedSkills.Length; i++)
                 {
                     int jobId = newJob.Id;
-                    //int skillId = 0;
-
-                    //nested for loop/?
-                    //for (var j = 0; i < skills.Count; i++)
-                    //{
-                    //    if (selectedSkills[i] == skills[j].Name)
-                    //    {
-                    //        skillId = skills[j].Id;
-                    //    }
-                    //}
 
                     JobSkill jobSkill = new JobSkill
                     {
@@ -83,9 +73,24 @@ namespace TechJobsPersistent.Controllers
                 return Redirect("/home");
 
             }
+            List<Employer> employers = context.Employers.ToList();
+            List<Skill> skills = context.Skills.ToList();
+
+            viewModel.Employers = new List<SelectListItem>();
+            foreach (var employer in employers)
+            {
+                viewModel.Employers.Add(new SelectListItem
+                {
+                    Value = employer.Id.ToString(),
+                    Text = employer.Name
+                });
+            }
+            viewModel.Skills = skills;
+            
             return View("AddJob", viewModel);
         }
 
+        //uses lambda expressions to query the databases to display Job detail
         [HttpGet]
         public IActionResult Detail(int id)
         {

@@ -34,6 +34,7 @@ namespace TechJobsPersistent.Controllers
             return View(viewModel);
         }
 
+        //Handles employer entry and saves it to Employer database in context
         [HttpPost]
         [Route("Employer/Add")]
         public IActionResult ProcessAddEmployerForm(AddEmployerViewModel viewModel)
